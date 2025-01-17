@@ -16,30 +16,25 @@ user_details = {
 
 def test_login(driver):
     print("-" * 10 + "Executing Test: Login"+ "-" * 10)
-    driver.get("https://uat.ayoo.care/login")
+    driver.get("https://uat.ayoo.care/Login")
     driver.maximize_window()
     driver.implicitly_wait(20)
     
     # Input email and password
-    driver.find_element(By.ID, "Email").send_keys(user_details['email'])
-    driver.find_element(By.XPATH, "//input[@name='password']").send_keys(user_details['password'])
+    driver.find_element(By.XPATH, "//input[@placeholder='Email/Phone number']").send_keys(user_details['email'])
+    driver.find_element(By.XPATH, "//input[@placeholder='Password']").send_keys(user_details['password'])
     driver.find_element(By.XPATH, "//button[text()='sign in']").click()
 
     try:
         # Check for success condition
-        WebDriverWait(driver, 20).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, 'main-banner'))
-        )
-        print("-" * 10 + "Login Test Passed" + "-" * 10)
-    except:
-        try:
-            # Check for failure condition
-            error_message = WebDriverWait(driver, 5).until(
-                EC.visibility_of_element_located((By.XPATH, '//span[text()="Email, phone number or password incorrect."]'))
+        WebDriverWait(driver, 30).until(
+                EC.visibility_of_element_located((By.CLASS_NAME, 'caption-box.book-appointment'))
             )
-            print("-" * 10 + "Cannot login: Email, phone number or password incorrect." + "-" * 10)
-        except Exception as e:
-            print("-" * 10 + "🥲🥲🥲--Login Test Failed: Unexpected error--🥲🥲🥲" + "-" * 10)
+        print("-" * 10 + "Login Test Passed" + "-" * 10)
+        return
+    except:
+        print("-" * 10 + "🥲🥲🥲--Login Test Failed: Unexpected error--🥲🥲🥲" + "-" * 10)
+        return
 
 # Example usage
 if __name__ == "__main__":

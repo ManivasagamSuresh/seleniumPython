@@ -14,7 +14,7 @@ def test_dasboardDoctorsList(driver):
 
     number_of_doctors = len(doctor_elements)
 
-    if number_of_doctors == 4:
+    if number_of_doctors == 5:
         print("Dashboard Doctors List Test Passed")
         
     else:

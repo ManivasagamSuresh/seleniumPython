@@ -63,7 +63,7 @@ def non_signedUserMyself(driver):
         print("-" * 10 + " 🥲🥲 Failed to log in patient. Stopping test execution. 🥲🥲 " + "-" * 10)
         return
 
-    if not AppointmentFunctions.checkConfirmationPage(driver, 'AUTOTEST', 'Non-Signed User: Myself'):
+    if not AppointmentFunctions.checkConfirmationPage(driver, 'AUTOTESTT', 'Non-Signed User: Myself'):
         print("-" * 10 + " 🥲🥲 Failed to confirm page. Stopping test execution. 🥲🥲 " + "-" * 10)
         return
     time.sleep(2)
@@ -116,7 +116,7 @@ def non_signedUserAddedRelative(driver):
     time.sleep(2)
     
 
-    if not AppointmentFunctions.checkConfirmationPage(driver, 'AUTOTEST', 'Non-Signed User: Added_Relative'):
+    if not AppointmentFunctions.checkConfirmationPage(driver, 'AUTOTESTT', 'Non-Signed User: Added_Relative'):
         print("-" * 10 + " 🥲🥲 Failed to confirm page. Stopping test execution. 🥲🥲 " + "-" * 10)
         return
     time.sleep(2)
@@ -175,7 +175,7 @@ def non_signedUser_NewRelative(driver):
     # time.sleep(2)
     
 
-    if not AppointmentFunctions.checkConfirmationPage(driver, 'AUTOTEST', 'Non-Signed User: Add New Relative(My Spouse)'):
+    if not AppointmentFunctions.checkConfirmationPage(driver, 'AUTOTESTT', 'Non-Signed User: Add New Relative(My Spouse)'):
         print("-" * 10 + " 🥲🥲 Failed to confirm page. Stopping test execution. 🥲🥲 " + "-" * 10)
         return
     time.sleep(2)
@@ -185,8 +185,8 @@ def non_signedUser_NewRelative(driver):
 
 
 def non_signed_User():
-#   execute_test(non_signedUserMyself)
-#   execute_test(non_signedUserAddedRelative)
+  execute_test(non_signedUserMyself)
+  execute_test(non_signedUserAddedRelative)
   execute_test(non_signedUser_NewRelative)
   
     
@@ -201,9 +201,7 @@ def execute_test(test_function):
         driver.quit()
 
 
-if __name__ == "__main__":
-    driver = webdriver.Chrome()  
-    try:
-        non_signed_User()
-    finally:
-        driver.quit()
+if __name__ == "__main__": 
+    non_signed_User()
+    
+   

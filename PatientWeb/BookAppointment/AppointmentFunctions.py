@@ -10,10 +10,15 @@ from selenium.webdriver.common.keys import Keys
 import random
 import time
 from faker import Faker
-from PatientWeb.signup import generate_unique_mobile_number
+
 
 fake = Faker()
 
+
+def generate_unique_mobile_number():
+    first_digit = random.randint(6, 9)  
+    remaining_digits = random.randint(10**8, 10**9 - 1)
+    return f"{first_digit}{remaining_digits}"
 
 
 
@@ -65,7 +70,7 @@ def selectTypeUnSignedUser(driver, testcase):
 
 # options 
 # 1. Myself
-# 2. My Spouse
+# 2. My Child
 # 3. My Spouse
 # 4. My Parents
 # 5. Couple/Family
@@ -218,6 +223,7 @@ def patientDetailsConfirmationPage(driver, testcase):
 
         if is_visible:
             print(f"----------\nElement 'User details Page' is visible in {testcase}! ✅\n----------")
+            time.sleep(5)
             try:
                 next_button = driver.find_element(By.XPATH, "//button[normalize-space()='Next']")
                 next_button.click()
@@ -328,7 +334,7 @@ def fillPatientDetails(driver, testcase):
         unique_mob = generate_unique_mobile_number()
 
         WebDriverWait(driver, 10).until(
-            EC.visibility_of_element_located((By.ID, 'patinet-firstname'))
+            EC.visibility_of_element_located((By.ID, 'First-Name'))
         ).send_keys(random_first_name)
 
         last_name_field = WebDriverWait(driver, 10).until(
@@ -395,6 +401,95 @@ def fillPatientDetails(driver, testcase):
         print(f"----------🥲🥲🥲🥲 An unexpected error occurred while performing case- {testcase} during Fill patient details: {e} 🥲🥲🥲🥲----------")
         return False
 
+
+def fillUserDetails(driver, userDetails, testcase):
+    try:
+        # Fill First Name
+        print("---------- Filling First Name ----------")
+        fill_input_by_label(driver, 'First Name', userDetails.get('first_name', ''))
+        time.sleep(1)
+
+        # Fill Last Name
+        print("---------- Filling Last Name ----------")
+        fill_input_by_label(driver, 'Last Name', userDetails.get('last_name', ''))
+        time.sleep(1)
+
+        # Select Gender
+        print("---------- Selecting Gender ----------")
+        gender_dropdown = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, "//div[@id='Gender-select']"))
+        )
+        gender_dropdown.click()
+
+        gender = userDetails.get('gender', '').strip()
+        options = WebDriverWait(driver, 10).until(
+            EC.presence_of_all_elements_located((By.XPATH, "//li[@data-value]"))
+        )
+        matched_option = next((option for option in options if option.text.strip().lower() == gender.lower()), None)
+
+        if matched_option:
+            matched_option.click()
+            print(f"---------- Gender selected: {gender} ----------")
+        else:
+            print(f"🥲🥲🥲🥲---------- Gender '{gender}' not found, skipping selection ----------🥲🥲🥲🥲")
+        time.sleep(1)
+
+        # Fill Date of Birth
+        print("---------- Filling Date of Birth ----------")
+        dob_field = WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located((By.XPATH, "//label[text()='Date of Birth']/following::input[@type='text' and @placeholder='YYYY-MM-DD'][1]"))
+        )
+        dob_field.click()
+        dob_field.send_keys(Keys.CONTROL + "a")
+        dob_field.send_keys(Keys.DELETE)
+        dob_field.send_keys(userDetails.get('dob', ''))
+        dob_field.send_keys(Keys.ENTER)
+        time.sleep(10)
+
+        # Fill Phone Number
+        print("---------- Filling Phone Number ----------")
+        phone_field = WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located((By.XPATH, "//label[text()='Phone Number']/following::input[@type='text'][1]"))
+        )
+        phone_field.send_keys(userDetails.get('mobile', ''))
+        time.sleep(1)
+
+        # Fill Email Id
+        print("---------- Filling Email Id ----------")
+        email_field = WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located((By.XPATH, "//label[text()='Email Id']/following::input[@type='text'][1]"))
+        )
+        email_field.send_keys(userDetails.get('email', ''))
+        time.sleep(1)
+
+        print(f"---------- Patient details filled successfully for: {testcase} ----------")
+        return True
+
+    except Exception as e:
+        print(f"🥲🥲🥲🥲---------- An error occurred while executing: {testcase} ----------🥲🥲🥲🥲")
+        print(f"🥲🥲🥲🥲 Error Details : {e} 🥲🥲🥲🥲")
+        return False
+
+
+def fill_input_by_label(driver, label_text, value_to_fill):
+    try:
+        # Wait until the label with the specified text is visible
+        label = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, f"//label[contains(text(), '{label_text}')]"))
+        )
+        
+        # Find the input element following the label
+        input_field = label.find_element(By.XPATH, "following-sibling::div//input")
+        
+        # Clear the input field and fill in the value
+        input_field.clear()
+        input_field.send_keys(value_to_fill)
+        print(f"Filled '{label_text}' with '{value_to_fill}' successfully.")
+        
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+
 def checkConfirmationPage(driver, promo_code, testcase):
     try:
         action_section = WebDriverWait(driver, 10).until(
@@ -455,8 +550,12 @@ def checkConfirmationPage(driver, promo_code, testcase):
 def login_patient(driver, userdetails, testcase):
     try:
         print(userdetails)
-        driver.find_element(By.ID, "Email").send_keys(userdetails["email"])
-        driver.find_element(By.XPATH, "//input[@name='password']").send_keys(userdetails["password"])
+        # driver.find_element(By.XPATH, "//input[@placeholder='Email/Phone number']").send_keys(user_details['email'])
+        # driver.find_element(By.XPATH, "//input[@placeholder='Password']").send_keys(user_details['password'])
+        driver.find_element(By.XPATH, "//input[@placeholder='Email/Phone number']").send_keys(userdetails["email"])
+        time.sleep(2)
+        driver.find_element(By.XPATH, "//input[@placeholder='Password']").send_keys(userdetails["password"])
+        time.sleep(2)
         driver.find_element(By.XPATH, "//button[text()='sign in']").click()
         print(f"---------- Login successful for {testcase}. ----------")
         time.sleep(5)
@@ -472,4 +571,192 @@ def login_patient(driver, userdetails, testcase):
         return False
 
 
+def setup_appointment(driver, appt_For ,testcase):
+    driver.get("https://uat.ayoo.care")
+    driver.maximize_window()
+    driver.implicitly_wait(10)
 
+    if not selectTypeUnSignedUser(driver, f'{testcase}'):
+        print("-" * 10 + " 🥲🥲 Failed to select type. Stopping test execution. 🥲🥲 " + "-" * 10)
+        return
+    time.sleep(2)
+
+    if not selectAppointmentFor(driver, appt_For, f'{testcase}'):
+        print("-" * 10 + " 🥲🥲 Failed to select appointment. Stopping test execution. 🥲🥲 " + "-" * 10)
+        return
+    time.sleep(1)
+
+    if not selectConsultationType(driver, 'Virtual', f'{testcase}'):  # InClinic
+        print("-" * 10 + " 🥲🥲 Failed to select consultation type. Stopping test execution. 🥲🥲 " + "-" * 10)
+        return
+    time.sleep(2)
+
+    if not selectRandomSymptom(driver, f'{testcase}'):
+        print("-" * 10 + " 🥲🥲 Failed to select random symptom. Stopping test execution. 🥲🥲 " + "-" * 10)
+        return
+    time.sleep(1)
+
+    if not select_time_slot(driver, f'{testcase}'):
+        print("-" * 10 + " 🥲🥲 Failed to select time slot. Stopping test execution. 🥲🥲 " + "-" * 10)
+        return
+    time.sleep(2)
+    return True
+
+def fillNUmandemail_unreg(driver, header, testcase):
+    try:
+        header_element = WebDriverWait(driver, 20).until(
+    EC.visibility_of_element_located((By.XPATH, f"//h5[contains(normalize-space(.), \"{header}\")]"))
+)
+     
+        # Locate the parent container of the form fields
+        form_container = header_element.find_element(By.XPATH, "./ancestor::div[contains(@class, 'userData-form')]")
+       
+        # Helper function to fill input fields based on label
+        def fill_field_by_label(form, label_text, value):
+            input_element = form.find_element(
+                By.XPATH, f".//label[contains(text(), '{label_text}')]/following-sibling::div//input"
+            )
+            input_element.click()
+            input_element.clear()
+            input_element.send_keys(value)
+        
+        unique_email = fake.email()
+        unique_mob = generate_unique_mobile_number()
+
+        fill_field_by_label(form_container, 'Phone Number', unique_mob)
+        fill_field_by_label(form_container, 'Email Id', unique_email)
+    except:
+        print(f'-----error while printing emaila nd mobile for new user in: {testcase}')
+
+
+
+def fillFormBasedOnHeader(driver, header, testcase, userDetails=None):
+    try:
+        # Locate the header element
+        
+        header_element = WebDriverWait(driver, 20).until(
+    EC.visibility_of_element_located((By.XPATH, f"//h5[contains(normalize-space(.), \"{header}\")]"))
+)
+     
+        # Locate the parent container of the form fields
+        form_container = header_element.find_element(By.XPATH, "./ancestor::div[contains(@class, 'userData-form')]")
+       
+        # Helper function to fill input fields based on label
+        def fill_field_by_label(form, label_text, value):
+            input_element = form.find_element(
+                By.XPATH, f".//label[contains(text(), '{label_text}')]/following-sibling::div//input"
+            )
+            input_element.click()
+            input_element.clear()
+            input_element.send_keys(value)
+
+        # Helper function to select a gender
+        # Updated helper function to select gender
+        def fill_gender(form, value='Male'):
+            try:
+                # Locate the Gender dropdown within the form
+                gender_dropdown = WebDriverWait(form, 20).until(
+                EC.element_to_be_clickable(
+                (By.XPATH, ".//div[@aria-labelledby='Gender-label Gender-select' and contains(@id, 'Gender-select')]")
+              )
+            )
+        
+                 # Click to open the dropdown
+                gender_dropdown.click()
+
+                # Identify the aria-controls attribute of the dropdown
+                aria_controls = gender_dropdown.get_attribute("aria-controls")
+
+        # Use aria-controls to locate the correct dropdown options list
+                options_list = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located(
+                (By.XPATH, f"//ul[@id='{aria_controls}']")
+            )
+        )
+
+        # Locate and click the desired option
+                options = options_list.find_elements(By.XPATH, ".//li[@data-value]")
+                for option in options:
+                    print(option)
+                    if option.text.strip().lower() == value.lower():
+                        option.click()
+                        return True  # Exit once the correct option is clicked
+
+                print(f"Gender option '{value}' not found in dropdown.")
+                return False
+            except Exception as e:
+                print(f"Failed to select gender: {e}")
+                return False
+
+        # Helper function to fill Date of Birth
+        # Helper function to fill Date of Birth dynamically
+        def fill_dob(form, dob='2000-01-01'):
+            try:
+                label_element = form.find_element(By.XPATH, f".//label[text()='Date of Birth']")
+                # Get the 'for' attribute (or 'id') of the label to identify the corresponding input field
+                input_id = label_element.get_attribute("for")
+        
+                # Use the 'id' to locate the input field
+                input_field = WebDriverWait(form, 10).until(
+                 EC.visibility_of_element_located(
+                (By.XPATH, f"//input[@id='{input_id}']")
+                        )
+                        )
+
+                 # Clear and fill the input field
+                input_field.click()
+                input_field.send_keys(Keys.CONTROL + "a")  # Select all text
+                input_field.send_keys(Keys.DELETE)  # Clear the field
+                input_field.send_keys(dob)  # Enter the new value
+                input_field.send_keys(Keys.ENTER)  # Confirm (if needed)
+                time.sleep(1)  # Allow UI to update
+                print(f"Successfully filled Date of Birth: {dob}")
+            except Exception as e:
+                print(f"Failed to fill Date of Birth: {e}")
+
+        
+
+        # Filling form fields based on the header
+        if header.lower() == "patient's information":
+            print(f"---------- Filling Patient's Information for {testcase} ----------")
+            fill_field_by_label(form_container, 'First Name', fake.first_name())
+            fill_field_by_label(form_container, 'Last Name', fake.last_name())
+            time.sleep(1)
+            fill_gender(form_container, 'Female') 
+            time.sleep(1)
+            fill_dob(form_container, '2000-01-01')
+            fill_field_by_label(form_container, 'Phone Number', generate_unique_mobile_number())
+            fill_field_by_label(form_container, 'Email Id', fake.email())
+        elif header.lower() == "caretaker / account manager's information":
+            print(f"---------- Filling Caretaker / Account Manager's Information for {testcase} ----------")
+            time.sleep(1)
+            if userDetails:
+                fill_field_by_label(form_container, 'First Name', userDetails.get('first_name', ''))
+                fill_field_by_label(form_container, 'Last Name', userDetails.get('last_name', ''))
+                time.sleep(1)
+                
+                fill_gender(form_container, userDetails.get('gender', ''))  
+                time.sleep(1)
+                fill_dob(form_container, userDetails.get('dob', ''))
+                # fill_field_by_label(form_container, 'Phone Number', userDetails.get('mobile', ''))
+                # fill_field_by_label(form_container, 'Email Id', userDetails.get('email', ''))
+            else:
+                print("---------- User details are not provided for caretaker. ----------")
+        else:
+            print(f"🥲🥲🥲🥲 Unknown header: {header} 🥲🥲🥲🥲")
+
+        print(f"---------- Form filling completed for header: {header}, testcase: {testcase} ----------")
+        return True
+
+    except TimeoutException as e:
+        print(f"🥲🥲🥲🥲 Timeout occurred while locating header: {header} 🥲🥲🥲🥲")
+        print(f"🥲🥲🥲🥲 Error Details : {e} 🥲🥲🥲🥲")
+        return False
+    except NoSuchElementException as e:
+        print(f"🥲🥲🥲🥲 Form fields not found for header: {header} 🥲🥲🥲🥲")
+        print(f"🥲🥲🥲🥲 Error Details : {e} 🥲🥲🥲🥲")
+        return False
+    except Exception as e:
+        print(f"🥲🥲🥲🥲 An unexpected error occurred while handling header: {header} 🥲🥲🥲🥲")
+        print(f"🥲🥲🥲🥲 Error Details : {e} 🥲🥲🥲🥲")
+        return False

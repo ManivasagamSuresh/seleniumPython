@@ -9,6 +9,7 @@ from PatientWeb.SignUpPII import checkPIISingleAcnt
 from PatientWeb.SignUpPII import checkPIIMultipleAcnt
 from PatientWeb.BookAppointment.BookAppointmentSignIn import signedUser
 from PatientWeb.BookAppointment.BookAppointmentNonSignIn import non_signed_User
+from PatientWeb.BookAppointment.BookAppointmentUnReg import unregUsers
 
 
 
@@ -31,8 +32,9 @@ def main():
     # execute_test(test_dasboardDoctorsList)
     # execute_test(checkPIISingleAcnt)
     # execute_test(checkPIIMultipleAcnt)
-    signedUser()
-    non_signed_User()
+    # signedUser()
+    # non_signed_User()
+    unregUsers()
 
 if __name__ == "__main__":
     main()

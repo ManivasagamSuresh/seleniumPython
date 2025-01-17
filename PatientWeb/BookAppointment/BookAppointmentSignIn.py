@@ -46,7 +46,7 @@ def signedUserMyself(driver):
         return
     time.sleep(2)
 
-    if not AppointmentFunctions.checkConfirmationPage(driver, 'AUTOTEST', 'Signed User:Myself'):
+    if not AppointmentFunctions.checkConfirmationPage(driver, 'AUTOTESTT', 'Signed User:Myself'):
         print("-" * 10 + " 🥲🥲 Failed to confirm page. Stopping test execution. 🥲🥲 " + "-" * 10)
         return
     time.sleep(2)
@@ -90,7 +90,7 @@ def signedUserAddedRelative(driver):
         return
     time.sleep(2)
 
-    if not AppointmentFunctions.checkConfirmationPage(driver, 'AUTOTEST', 'Signed User: Added Relative(Spouse)'):
+    if not AppointmentFunctions.checkConfirmationPage(driver, 'AUTOTESTT', 'Signed User: Added Relative(Spouse)'):
         print("-" * 10 + " 🥲🥲 Failed to confirm page. Stopping test execution. 🥲🥲 " + "-" * 10)
         return
     time.sleep(2)
@@ -135,7 +135,7 @@ def signedUserNewRelative(driver):
     time.sleep(2)
 
 
-    if not AppointmentFunctions.checkConfirmationPage(driver, 'AUTOTEST', 'Signed User: Add New Relative(Parent)'):
+    if not AppointmentFunctions.checkConfirmationPage(driver, 'AUTOTESTT', 'Signed User: Add New Relative(Parent)'):
         print("-" * 10 + " 🥲🥲 Failed to confirm page. Stopping test execution. 🥲🥲 " + "-" * 10)
         return
     time.sleep(2)
@@ -143,8 +143,8 @@ def signedUserNewRelative(driver):
 
 
 def signedUser():
-    # execute_test(signedUserMyself)
-    # execute_test(signedUserAddedRelative)
+    execute_test(signedUserMyself)
+    execute_test(signedUserAddedRelative)
     execute_test(signedUserNewRelative)
     
     
@@ -161,8 +161,5 @@ def execute_test(test_function):
 
 
 if __name__ == "__main__":
-    driver = webdriver.Chrome()  
-    try:
-        signedUser()
-    finally:
-        driver.quit()
+    signedUser()
+

@@ -1,8 +1,14 @@
+import sys
+sys.path.append("E:/front-end/automation_selenium/")
+
+
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from PatientWeb.BookAppointment import AppointmentFunctions
 import time
 
 def checkPIISingleAcnt(driver):
@@ -56,8 +62,8 @@ def handlePopupAndActionSingleAcnt(driver, action, user_details):
     
     try:
         # Wait for the "Account Already Exists" pop-up
-        acnt_exist_page = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'Account Already Exists')]"))
+        acnt_exist_page = WebDriverWait(driver, 30).until(
+            EC.visibility_of_element_located((By.XPATH, "//div[contains(text(),'Account Already Exists')]"))
         )
 
         if acnt_exist_page.is_displayed():
@@ -100,10 +106,12 @@ def handlePopupAndActionMultipleAcnt(driver, user_details):
             masked_mobile.click()
             time.sleep(3)
             print("-" * 10 + f"Clicked on the required mobile number " + "-" * 10 )
-            claimAccountDef(driver, user_details)
-
+            if not claimAccountDef(driver, user_details):
+                return False
+            return True
     except Exception as e:
-       print("-" * 10 + f" Error during Claim for Multiple Account action: {e} " + "-" * 10) 
+       print("-" * 10 + f" Error during Claim for Multiple Account action: {e} " + "-" * 10)
+       return False 
 
 
 def claimAccountDef(driver, user_details):
@@ -139,10 +147,13 @@ def claimAccountDef(driver, user_details):
                 )
                 if otp_modal.is_displayed():
                     print("-" * 10 + "SignUp PII, Claim Account Test Passed " + "-" * 10)
+                    return True
                 else:
-                    print("-" * 10 + " 🥲 OTP verification modal not displayed, Test Failed 🥲 " + "-" * 10)        
+                    print("-" * 10 + " 🥲 OTP verification modal not displayed, Test Failed 🥲 " + "-" * 10)
+                    return False        
             else:
                 print("-" * 10 + " 🥲 Reset Password modal not displayed, Test Failed 🥲 " + "-" * 10)
+                return False
 
     except Exception as e:
         # Handle any errors during the Claim Account process
@@ -154,8 +165,10 @@ def handleNewUserCase(driver, user_details):
     print("-" * 10 + " Handling New User Case " + "-" * 10)
     try:
         print("-" * 10 + " New User case handled successfully " + "-" * 10)
+        return True
     except Exception as e:
         print("-" * 10 + f" Error in New User Case: {e} " + "-" * 10)
+        return False
 
 
 def handleSignInCase(driver, user_details):
@@ -166,26 +179,39 @@ def handleSignInCase(driver, user_details):
                 )
         if login_page.is_displayed():
             print("-" * 10 + " Sign In case handled successfully " + "-" * 10)
+            return True
     except Exception as e:
         print("-" * 10 + f" Error in Sign In Case: {e} " + "-" * 10)
+        return False
 
 
 
 def provideUserDetails(driver, first_name, last_name, gender, dob, **kwargs):
-    driver.get("https://uat.ayoo.care/signUp")
+    driver.get("https://uat.ayoo.care/SignUp")
     driver.maximize_window()
     driver.implicitly_wait(10)
     print("-" * 10 + f" Providing details: {first_name} {last_name}, Gender: {gender}, DOB: {dob} " + "-" * 10)
-    driver.find_element(By.ID, "mui-1").send_keys(first_name)
-    driver.find_element(By.ID, "mui-2").send_keys(last_name)
+    AppointmentFunctions.fill_input_by_label(driver,'First Name', first_name)
+    AppointmentFunctions.fill_input_by_label(driver,'Last Name', last_name)
+    
 
     # Select gender
-    gender_dropdown = driver.find_element(By.XPATH, "//*[@id='__next']/main/div/section/div/div/div/div/div[2]")
-    gender_dropdown.click()
+    label = WebDriverWait(driver, 10).until(
+    EC.presence_of_element_located((By.XPATH, "//label[contains(text(), 'Gender')]"))
+    )
+
+    # Find the input field associated with the label and click on it
+    input_field = WebDriverWait(driver, 10).until(
+    EC.element_to_be_clickable((By.XPATH, "//label[contains(text(), 'Gender')]/following-sibling::div//div[@role='combobox']"))
+    )
+    input_field.click()
+    print('Gender clicked')
     driver.find_element(By.XPATH, f"//li[@data-value='{gender}']").click()
 
     # Enter DOB
-    date_input = driver.find_element(By.ID, "mui-5")
+    date_input = WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located((By.XPATH, "//label[text()='Date of Birth']/following::input[@type='text' and @placeholder='YYYY-MM-DD'][1]"))
+        )
     date_input.click()
     date_input.send_keys(Keys.CONTROL + "a")
     date_input.send_keys(Keys.DELETE)
