@@ -10,6 +10,7 @@ from PatientWeb.SignUpPII import checkPIIMultipleAcnt
 from PatientWeb.BookAppointment.BookAppointmentSignIn import signedUser
 from PatientWeb.BookAppointment.BookAppointmentNonSignIn import non_signed_User
 from PatientWeb.BookAppointment.BookAppointmentUnReg import unregUsers
+from PatientWeb.Policies import callPolicies
 
 
 
@@ -27,14 +28,17 @@ def execute_test(test_function):
 def main():
     print("Starting Test Execution...")
 
-    # execute_test(test_login)
-    # execute_test(mainTest_signup)
     # execute_test(test_dasboardDoctorsList)
+    # execute_test(callPolicies)
+    # execute_test(test_login)
+    execute_test(mainTest_signup)
     # execute_test(checkPIISingleAcnt)
     # execute_test(checkPIIMultipleAcnt)
-    # signedUser()
-    # non_signed_User()
+    signedUser()
+    non_signed_User()
     unregUsers()
 
 if __name__ == "__main__":
     main()
+
+    '='*10 + '-'*10 + "🥲"*4 + "🥲"*4 + '-'*10 + '='*10

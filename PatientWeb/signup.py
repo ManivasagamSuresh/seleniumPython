@@ -11,6 +11,7 @@ from PatientWeb.BookAppointment import AppointmentFunctions
 import time
 import random
 from faker import Faker
+from variable import URL
 
 fake = Faker()
 MOBILE_EXISTS_MESSAGE = "Phone Number Already in Use"
@@ -29,12 +30,12 @@ def check_popup(driver, message):
             print("-" * 10 + f" Popup displayed: {message} " + "-" * 10)
             return True
     except Exception as e:
-        print("-" * 10 + f" No popup displayed for: {message}, Error: {e} " + "-" * 10)
+        print("-" * 10 + "🥲"*4 +  f" No popup displayed for: {message}, Error: {e} " + "🥲"*4  + "-" * 10)
         return False
-
+   
 def test_signup(driver, num=None, email=None):
-    print("-" * 10 + " Executing Test: Sign Up " + "-" * 10)
-    driver.get("https://uat.ayoo.care/Login")
+    print("=" * 10 + " Executing Test: Sign Up " + "=" * 10)
+    driver.get(f"{URL}/Login")
     driver.maximize_window()
     driver.implicitly_wait(10)
 
@@ -98,7 +99,7 @@ def test_signup(driver, num=None, email=None):
         unique_email = fake.email()
         AppointmentFunctions.fill_input_by_label(driver, 'Email Id', unique_email)
         print("-" * 10 + f" Generated and entered email: {unique_email} " + "-" * 10)
-
+    
     # Provide password and confirm password
     AppointmentFunctions.fill_input_by_label(driver, 'Password', 'Ayoo@123')
     AppointmentFunctions.fill_input_by_label(driver, 'Confirm Password', 'Ayoo@123')
@@ -106,11 +107,10 @@ def test_signup(driver, num=None, email=None):
 
     # Click Sign Up
     driver.find_element(By.XPATH, "//button[text()='Sign Up']").click()
-    time.sleep(2)
 
     # Validate OTP Verification page
     try:
-        otp_page = WebDriverWait(driver, 10).until(
+        otp_page = WebDriverWait(driver, 30).until(
             EC.presence_of_element_located((By.XPATH, "//h4[contains(text(),'OTP Verification')]"))
         )
         if otp_page.is_displayed():
@@ -119,7 +119,7 @@ def test_signup(driver, num=None, email=None):
             print("-" * 10 + " 🥲🥲🥲 SignUp Test Failed 🥲🥲🥲 " + "-" * 10)
     except Exception as e:
         print("-" * 10 + " 🥲🥲🥲 SignUp Test Failed 🥲🥲🥲 " + "-" * 10)
-        print("-" * 10 + f" Error: {e} " + "-" * 10)
+        print("-" * 10 +  "🥲"*4 + f" Error: {e} " + "🥲"*4 + "-" * 10)
 
     time.sleep(2)
 
@@ -143,7 +143,7 @@ def provideUserDetails(driver):
     EC.element_to_be_clickable((By.XPATH, "//label[contains(text(), 'Gender')]/following-sibling::div//div[@role='combobox']"))
     )
     input_field.click()
-    print('Gender clicked')
+    
 
 
     options = driver.find_elements(By.XPATH, "//li[@data-value]") 
@@ -165,15 +165,15 @@ def provideUserDetails(driver):
 
 
 def mainTest_signup(driver):
-    print("-" * 10 + " Running Sign Up Test with unique details... " + "-" * 10)
+    print("=" * 10 + " Running Sign Up Test with unique details... " + "=" * 10)
     test_signup(driver)
     time.sleep(2)
     registered_mobile = "9566991210"
-    print("-" * 10 + " Running Sign Up Test with registered mobile number... " + "-" * 10)
+    print("=" * 10 + " Running Sign Up Test with registered mobile number... " + "=" * 10)
     test_signup(driver, num=registered_mobile)
     time.sleep(2)
     registered_email = "s.kishore123.64@gmail.com"
-    print("-" * 10 + " Running Sign Up Test with registered email... " + "-" * 10)
+    print("=" * 10 + " Running Sign Up Test with registered email... " + "=" * 10)
     test_signup(driver, email=registered_email)
     
 

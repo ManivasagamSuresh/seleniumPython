@@ -7,9 +7,11 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.common.keys import Keys
+from PatientWeb import login
 import random
 import time
 from faker import Faker
+from variable import URL
 
 
 fake = Faker()
@@ -31,11 +33,11 @@ def selectTypeSignedUser(driver, testcase):
         )
         selected_option = random.choice(care_options)  # Randomly select one
         selected_option.click()
-        print("---------- Selected care type ----------")
+        print('-'*10 + "Selected care type" + '-'*10) 
         time.sleep(0.5)
         return True
     except Exception as e:
-        print(f"---------- Error in {testcase}: {e} ----------")
+        print('-'*10 + "🥲"*4 + f"Error in {testcase}: {e}"  + "🥲"*4 + '-'*10)
         return False
 
 def selectTypeUnSignedUser(driver, testcase):
@@ -65,9 +67,9 @@ def selectTypeUnSignedUser(driver, testcase):
         return True
 
     except Exception as e:
-        print(f"An error occurred while selecting care type and appointment in {testcase} - {e}")
+        print('-'*10 + "🥲"*4 + f"An error occurred while selecting care type and appointment in {testcase} - {e}" + "🥲"*4 + '-'*10)
         return False
-
+ 
 # options 
 # 1. Myself
 # 2. My Child
@@ -81,23 +83,23 @@ def selectAppointmentFor(driver, type, testcase):
             EC.presence_of_element_located((By.CLASS_NAME, "name-dropdown-lists"))
         )
         option = dropdown_list.find_element(By.XPATH, f".//span[text()='{type}']")
-        option.click()
-        print(f"---------- Selected '{type}' from the dropdown. ----------")
+        option.click() 
+        print('-'*10 + f"Selected '{type}' from the dropdown." + '-'*10)
         return True
     except Exception as e:
-        print(f"---------- Error in {testcase} while selecting '{type}': {e} ----------")
+        print( '-'*10 + "🥲"*4 + f"Error in {testcase} while selecting '{type}': {e}"  + "🥲"*4 + '-'*10)
         try:
             appointment_banner = driver.find_element(By.CLASS_NAME, "patient-type-banner")
             appointment_banner.click()
             time.sleep(0.5)
-            print("---------- Clicked on 'Appointment for'. ----------")
+            print('-'*10 + "Clicked on 'Appointment for'."  + '-'*10)
             dropdown_list = driver.find_element(By.CLASS_NAME, "name-dropdown-lists")
             option = dropdown_list.find_element(By.XPATH, f".//span[text()='{type}']")
             option.click()
-            print(f"---------- Selected '{type}' after opening 'Appointment for'. ----------")
+            print('-'*10 + f"Selected '{type}' after opening 'Appointment for'." + '-'*10)
             return True
         except Exception as inner_e:
-            print(f"---------- Failed to select '{type}' in retry for {testcase}: {inner_e} ----------")
+            print('-'*10 + "🥲"*4 + f"Failed to select '{type}' in retry for {testcase}: {inner_e}"  + "🥲"*4 + '-'*10)
             return False
 
 def selectConsultationType(driver, consultation_type, testcase):
@@ -107,22 +109,22 @@ def selectConsultationType(driver, consultation_type, testcase):
         )
         option = dropdown_list.find_element(By.XPATH, f".//div[@id='{consultation_type}']")
         option.click()
-        print(f"---------- Selected '{consultation_type}' from the dropdown. ----------")
+        print('-'*10 + f"Selected '{consultation_type}' from the dropdown. " + '-'*10)
         return True
     except Exception as e:
-        print(f"---------- Error in {testcase} while selecting '{consultation_type}': {e} ----------")
+        print('-'*10 + "🥲"*4 + f"Error in {testcase} while selecting '{consultation_type}': {e}" + "🥲"*4 + '-'*10)
         try:
             consultation_banner = driver.find_element(By.CLASS_NAME, "search-type-banner")
             consultation_banner.click()
             time.sleep(0.5)
-            print("---------- Clicked on 'Consultation Type'. ----------")
+            print('-'*10 + " Clicked on 'Consultation Type'. " + '-'*10)
             dropdown_list = driver.find_element(By.CLASS_NAME, "search-type-dropdown")
             option = dropdown_list.find_element(By.XPATH, f".//div[@id='{consultation_type}']")
             option.click()
-            print(f"---------- Selected '{consultation_type}' after opening 'Consultation Type'. ----------")
+            print('-'*10 + f" Selected '{consultation_type}' after opening 'Consultation Type'." + '-'*10)
             return True
         except Exception as inner_e:
-            print(f"---------- Failed to select '{consultation_type}' in retry for {testcase}: {inner_e} ----------")
+            print( '-'*10 + f" Failed to select '{consultation_type}' in retry for {testcase}: {inner_e}"  + '-'*10)
             return False
 
 def selectRandomSymptom(driver, testcase):
@@ -136,16 +138,17 @@ def selectRandomSymptom(driver, testcase):
                 selected_option = random.choice(dropdown_list)
                 selected_text = selected_option.text
                 selected_option.click()
-                print(f"---------- Selected random symptom: {selected_text} ----------")
+                print('-'*10 + f"Selected random symptom: {selected_text} "  '-'*10)
                 return True
+           
             else:
-                print("---------- No symptoms found in the dropdown. ----------")
+                print('-'*10 + "🥲"*4 + "No symptoms found in the dropdown. " + "🥲"*4 + '-'*10)
                 return False
         except Exception as e:
-            print(f"---------- Attempt {attempt + 1} failed with error in {testcase}: {e} ----------")
+            print('-'*10 + "🥲"*4 + f"Attempt {attempt + 1} failed with error in {testcase}: {e}"  + "🥲"*4 + '-'*10)
             time.sleep(1)
-
-    print(f"---------- Failed to select a symptom after multiple attempts for {testcase}. ----------")
+ 
+    print('-'*10 + "🥲"*4 + f"Failed to select a symptom after multiple attempts for {testcase}." + "🥲"*4 + '-'*10)
     return False
 
 
@@ -165,16 +168,16 @@ def select_time_slot(driver, testcase):
                 random_slot = random.choice(time_slots)
                 slot_text = random_slot.text.strip()
                 ActionChains(driver).move_to_element(random_slot).click().perform()
-                print(f"---------- Selected time slot: {slot_text} ----------")
+                print('-'*10 + f"Selected time slot: {slot_text} " + '-'*10)
                 return True
             else:
-                print("---------- No available time slots found. ----------")
+                print('-'*10 + "No available time slots found." + '-'*10)
                 return False
         except Exception as e:
-            print(f"---------- Attempt {attempt + 1} failed with error in {testcase}: {e} ----------")
+            print('-'*10 + "🥲"*4 + f"Attempt {attempt + 1} failed with error in {testcase}: {e}" + "🥲"*4 + '-'*10)
             time.sleep(1)
 
-    print(f"---------- Failed to select a time slot after multiple attempts for {testcase}. ----------")
+    print('-'*10 + "🥲"*4 + f"Failed to select a time slot after multiple attempts for {testcase}. " + "🥲"*4 + '-'*10)
     return False
 
 def select_signin(driver, testcase):
@@ -185,32 +188,32 @@ def select_signin(driver, testcase):
             element = driver.find_element(By.CSS_SELECTOR, element_selector)
             is_visible = element.is_displayed()
         except NoSuchElementException:
-            print(f"🥲🥲🥲🥲----------\nError in {testcase}: User details Page not found! 🥲🥲🥲🥲\n----------")
+            print('-'*10 + "🥲"*4 + f"Error in {testcase}: User details Page not found" + "🥲"*4 + '-'*10)
             return False
 
         if is_visible:
-            print(f"----------\nElement 'User details Page' is visible in {testcase}! ✅\n----------")
+            print('-'*10 + f"Element 'User details Page' is visible in {testcase}! " + '-'*10)
             try:
                 signin_button = driver.find_element(By.XPATH, "//span[normalize-space()='Sign in']")
                 signin_button.click()
-                print(f"----------\nSuccessfully clicked the 'Sign-In' button in {testcase}! ✅\n----------")
+                print('-'*10 + f"Successfully clicked the 'Sign-In' button in {testcase}! "  + '-'*10)
                 return True
             except NoSuchElementException:
-                print(f"🥲🥲🥲🥲----------\nError in {testcase}: 'Sign-In' button with text 'Next' not found! 🥲🥲🥲🥲\n----------")
+                print('-'*10 + "🥲"*4 + f"Error in {testcase}: 'Sign-In' button with text 'Next' not found!" + "🥲"*4 + '-'*10)
                 return False
             except Exception as e:
-                print(f"🥲🥲🥲🥲----------\nError in {testcase}: 'Sign-In' button is not interactable! {str(e)} 🥲🥲🥲🥲\n----------")
+                print('-'*10 + "🥲"*4 + f"Error in {testcase}: 'Sign-In' button is not interactable! {str(e)}" + "🥲"*4 + '-'*10)
                 return False
         else:
-            print(f"🥲🥲🥲🥲----------\nError in {testcase}: User details Page is not visible! 🥲🥲🥲🥲\n----------")
+            print('-'*10 + "🥲"*4 + f"Error in {testcase}: User details Page is not visible!" + "🥲"*4 + '-'*10)
             return False
 
     except Exception as e:
-        print(f"🥲🥲🥲🥲----------\nError in {testcase}: {str(e)} 🥲🥲🥲🥲\n----------")
+        print('-'*10 + "🥲"*4 + f"Error in {testcase}: {str(e)}" + "🥲"*4 + '-'*10)
         return False
 
 def patientDetailsConfirmationPage(driver, testcase):
-    print(f"----------\nRunning Testcase: {testcase}\n----------")
+    print('-'*10 + f"Running Testcase: {testcase}" + '-'*10)
     try:
         element_selector = ".userData-form"
 
@@ -218,33 +221,33 @@ def patientDetailsConfirmationPage(driver, testcase):
             element = driver.find_element(By.CSS_SELECTOR, element_selector)
             is_visible = element.is_displayed()
         except NoSuchElementException:
-            print(f"🥲🥲🥲🥲----------\nError in {testcase}: User details Page not found! 🥲🥲🥲🥲\n----------")
+            print('-'*10 + "🥲"*4 + f"Error in {testcase}: User details Page not found!" + "🥲"*4 + '-'*10)
             return False
 
         if is_visible:
-            print(f"----------\nElement 'User details Page' is visible in {testcase}! ✅\n----------")
+            print('-'*10 + f"Element 'User details Page' is visible in {testcase}! " + '-'*10)
             time.sleep(5)
             try:
                 next_button = driver.find_element(By.XPATH, "//button[normalize-space()='Next']")
                 next_button.click()
-                print(f"----------\nSuccessfully clicked the 'Next' button in {testcase}! ✅\n----------")
+                print( '-'*10 + f"Successfully clicked the 'Next' button in {testcase}! "  + '-'*10)   
                 return True
             except NoSuchElementException:
-                print(f"🥲🥲🥲🥲----------\nError in {testcase}: 'Next' button with text 'Next' not found! 🥲🥲🥲🥲\n----------")
+                print('-'*10 + "🥲"*4 + f"Error in {testcase}: 'Next' button with text 'Next' not found!" + "🥲"*4 + '-'*10)
                 return False
             except Exception as e:
-                print(f"🥲🥲🥲🥲----------\nError in {testcase}: 'Next' button is not interactable! {str(e)} 🥲🥲🥲🥲\n----------")
+                print('-'*10 + "🥲"*4 + f"Error in {testcase}: 'Next' button is not interactable! {str(e)}" + "🥲"*4 + '-'*10)
                 return False
         else:
-            print(f"🥲🥲🥲🥲----------\nError in {testcase}: User details Page is not visible! 🥲🥲🥲🥲\n----------")
+            print('-'*10 + "🥲"*4 + f"Error in {testcase}: User details Page is not visible! " + "🥲"*4 + '-'*10)
             return False
 
     except Exception as e:
-        print(f"🥲🥲🥲🥲----------\nError in {testcase}: {str(e)} 🥲🥲🥲🥲\n----------")
+        print('-'*10 + "🥲"*4 + f"Error in {testcase}: {str(e)} " + "🥲"*4 + '-'*10)
         return False
 
-def patientDetailsAddNewRelative(driver, testcase):
-    print(f"----------\nRunning Testcase: {testcase}\n----------")
+def patientDetailsAddNewRelative(driver, testcase):  
+    print('-'*10 + f"Running Testcase: {testcase}" + '-'*10)
     try:
         element_selector = ".userData-form"
 
@@ -252,29 +255,29 @@ def patientDetailsAddNewRelative(driver, testcase):
             element = driver.find_element(By.CSS_SELECTOR, element_selector)
             is_visible = element.is_displayed()
         except NoSuchElementException:
-            print(f"🥲🥲🥲🥲----------\nError in {testcase}: User details Page not found! 🥲🥲🥲🥲\n----------")
+            print('-'*10 + "🥲"*4 + f"Error in {testcase}: User details Page not found!" + "🥲"*4 + '-'*10)
             return False
 
         if is_visible:
-            print(f"----------\nElement 'User details Page' is visible in {testcase}! ✅\n----------")
+            print('-'*10 + f"Element 'User details Page' is visible in {testcase}! " + '-'*10)
             try:
                 wait = WebDriverWait(driver, 10)
                 combobox = wait.until(
                     EC.element_to_be_clickable((By.CSS_SELECTOR, "div[role='combobox']"))
                 )
                 combobox.click()
-                print("✅ Successfully clicked the combobox.")
+                print('-'*10 + "Successfully clicked the combobox." + '-'*10)
                 
                 add_new_item = wait.until(
                     EC.element_to_be_clickable((By.XPATH, "//li[text()='Add New']"))
                 )
                 add_new_item.click()
-                print("✅ Successfully clicked 'Add New' from the dropdown.")
+                print('-'*10 + "Successfully clicked 'Add New' from the dropdown." + '-'*10)
                 time.sleep(1)
 
                 if testcase == "Non-Signed User: Add New Relative(My Spouse)":
                     if not replace_spouse(driver, testcase):
-                        print(f"🥲🥲🥲🥲----------\nError in {testcase}: Unable to Replace Spouse. Stopping test case. 🥲🥲🥲🥲\n----------")
+                        print('-'*10 + "🥲"*4 + f"Error in {testcase}: Unable to Replace Spouse. Stopping test case." + "🥲"*4 + '-'*10)
                         return False
                     time.sleep(3)
 
@@ -283,19 +286,19 @@ def patientDetailsAddNewRelative(driver, testcase):
                     driver.find_element(By.XPATH, "//button[contains(text(),'Next')]").click()
                     return True
                 else:
-                    return False
+                    return False 
             except NoSuchElementException:
-                print(f"🥲🥲🥲🥲----------\nError in {testcase}: SVG element not found! 🥲🥲🥲🥲\n----------")
+                print('-'*10 + "🥲"*4 + f"Error in {testcase}: SVG element not found!"+ "🥲"*4 + '-'*10)
                 return False
             except Exception as e:
-                print(f"🥲🥲🥲🥲----------\nError in {testcase}: Unable to interact with the SVG element - {str(e)} 🥲🥲🥲🥲\n----------")
+                print('-'*10 + "🥲"*4 + f"Error in {testcase}: Unable to interact with the SVG element - {str(e)}"+ "🥲"*4 + '-'*10 )
                 return False
         else:
-            print(f"🥲🥲🥲🥲----------\nError in {testcase}: User details Page is not visible! 🥲🥲🥲🥲\n----------")
+            print('-'*10 + "🥲"*4 + f"Error in {testcase}: User details Page is not visible! " + "🥲"*4 + '-'*10)
             return False
 
     except Exception as e:
-        print(f"🥲🥲🥲🥲----------\nError in {testcase}: {str(e)} 🥲🥲🥲🥲\n----------")
+        print('-'*10 + "🥲"*4 + f"Error in {testcase}: {str(e)} " + "🥲"*4 + '-'*10)
         return False
 
 def replace_spouse(driver, testcase):
@@ -318,12 +321,12 @@ def replace_spouse(driver, testcase):
             yes_button.click()
             
             print('-' * 10 + " Successfully clicked 'Yes' to replace spouse. " + '-' * 10)
-            return True
+            return True 
         else:
-            print(f"-----🥲🥲🥲🥲 Replace Spouse Modal not displayed for testcase: {testcase} 🥲🥲🥲🥲-----")
+            print('-'*10 + "🥲"*4 + f"Replace Spouse Modal not displayed for testcase: {testcase}"+ "🥲"*4 + '-'*10)
             return False
     except Exception as e:
-        print(f"-----🥲🥲🥲 Error in replace_spouse during {testcase}: {e} 🥲🥲🥲-----")
+        print('-'*10 + "🥲"*4 + f"Error in replace_spouse during {testcase}: {e}"+ "🥲"*4 + '-'*10)
         return False   
 
 def fillPatientDetails(driver, testcase):
@@ -367,7 +370,7 @@ def fillPatientDetails(driver, testcase):
             EC.element_to_be_clickable((By.XPATH, "//div[contains(@class, 'country-code')]//div[contains(@class, 'MuiSelect-select')]"))
         )
         dropdown.click()
-        print("✅ Successfully opened the country code dropdown.")
+        print('-'*10 + "Successfully opened the country code dropdown."+ '-'*10)
         time.sleep(1)
 
         # Select the +91 option
@@ -375,7 +378,7 @@ def fillPatientDetails(driver, testcase):
             EC.element_to_be_clickable((By.XPATH, "//li[@data-value='+91' and text()='+91 IN']"))
         )
         option.click()
-        print("✅ Successfully selected '+91 IN' from the list.")
+        print('-'*10 + "Successfully selected '+91 IN' from the list."+ '-'*10)
 
         phone_field = WebDriverWait(driver, 10).until(
             EC.visibility_of_element_located((By.XPATH, "//label[text()='Phone Number']/following::input[@type='text'][1]"))
@@ -388,34 +391,34 @@ def fillPatientDetails(driver, testcase):
         )
         email_field.send_keys(unique_email)
         time.sleep(5)
-        print(f"---------- Patient details filled successfully for :{testcase}. ----------")
+        print('-'*10 + f"Patient details filled successfully for :{testcase}."+ '-'*10)
         return True
 
     except TimeoutException as e:
-        print(f"----------🥲🥲🥲🥲 Timeout occurred while executing test case: {testcase} during Fill patient details  {e} 🥲🥲🥲🥲----------")
+        print('-'*10 + "🥲"*4 + f"Timeout occurred while executing test case: {testcase} during Fill patient details  {e}"+ "🥲"*4 + '-'*10)
         return False
     except NoSuchElementException as e:
-        print(f"----------🥲🥲🥲🥲 Element not found for {testcase} during Fill patient details: {e} 🥲🥲🥲🥲----------")
+        print('-'*10 + "🥲"*4 + f"Element not found for {testcase} during Fill patient details: {e}"+ "🥲"*4 + '-'*10)
         return False
     except Exception as e:
-        print(f"----------🥲🥲🥲🥲 An unexpected error occurred while performing case- {testcase} during Fill patient details: {e} 🥲🥲🥲🥲----------")
+        print('-'*10 + "🥲"*4 + f" An unexpected error occurred while performing case- {testcase} during Fill patient details: {e} "+ "🥲"*4 + '-'*10)
         return False
 
 
 def fillUserDetails(driver, userDetails, testcase):
-    try:
+    try:  
         # Fill First Name
-        print("---------- Filling First Name ----------")
+        print('-'*10 + "- Filling First Name" + '-'*10)
         fill_input_by_label(driver, 'First Name', userDetails.get('first_name', ''))
         time.sleep(1)
 
         # Fill Last Name
-        print("---------- Filling Last Name ----------")
+        print('-'*10 + " Filling Last Name" + '-'*10)
         fill_input_by_label(driver, 'Last Name', userDetails.get('last_name', ''))
         time.sleep(1)
 
         # Select Gender
-        print("---------- Selecting Gender ----------")
+        print('-'*10 + "Selecting Gender" + '-'*10)
         gender_dropdown = WebDriverWait(driver, 10).until(
             EC.element_to_be_clickable((By.XPATH, "//div[@id='Gender-select']"))
         )
@@ -429,13 +432,13 @@ def fillUserDetails(driver, userDetails, testcase):
 
         if matched_option:
             matched_option.click()
-            print(f"---------- Gender selected: {gender} ----------")
+            print('-'*10 + f"Gender selected: {gender}" + '-'*10)
         else:
-            print(f"🥲🥲🥲🥲---------- Gender '{gender}' not found, skipping selection ----------🥲🥲🥲🥲")
+            print('-'*10 + "🥲"*4 + f" Gender '{gender}' not found, skipping selection " + "🥲"*4 + '-'*10)
         time.sleep(1)
 
         # Fill Date of Birth
-        print("---------- Filling Date of Birth ----------")
+        print('-'*10 + " Filling Date of Birth" + '-'*10)
         dob_field = WebDriverWait(driver, 10).until(
             EC.visibility_of_element_located((By.XPATH, "//label[text()='Date of Birth']/following::input[@type='text' and @placeholder='YYYY-MM-DD'][1]"))
         )
@@ -447,7 +450,7 @@ def fillUserDetails(driver, userDetails, testcase):
         time.sleep(10)
 
         # Fill Phone Number
-        print("---------- Filling Phone Number ----------")
+        print('-'*10 + "Filling Phone Number " + '-'*10)
         phone_field = WebDriverWait(driver, 10).until(
             EC.visibility_of_element_located((By.XPATH, "//label[text()='Phone Number']/following::input[@type='text'][1]"))
         )
@@ -455,19 +458,19 @@ def fillUserDetails(driver, userDetails, testcase):
         time.sleep(1)
 
         # Fill Email Id
-        print("---------- Filling Email Id ----------")
+        print('-'*10 + "Filling Email Id" + '-'*10)
         email_field = WebDriverWait(driver, 10).until(
             EC.visibility_of_element_located((By.XPATH, "//label[text()='Email Id']/following::input[@type='text'][1]"))
         )
         email_field.send_keys(userDetails.get('email', ''))
         time.sleep(1)
 
-        print(f"---------- Patient details filled successfully for: {testcase} ----------")
+        print('-'*10 + f"Patient details filled successfully for: {testcase}" + '-'*10)
         return True
 
     except Exception as e:
-        print(f"🥲🥲🥲🥲---------- An error occurred while executing: {testcase} ----------🥲🥲🥲🥲")
-        print(f"🥲🥲🥲🥲 Error Details : {e} 🥲🥲🥲🥲")
+        print('-'*10 + "🥲"*4 + f"An error occurred while executing: {testcase} " + "🥲"*4 + '-'*10)
+        print('-'*10 + "🥲"*4 + f" Error Details : {e} " + "🥲"*4 + '-'*10)
         return False
 
 
@@ -484,10 +487,10 @@ def fill_input_by_label(driver, label_text, value_to_fill):
         # Clear the input field and fill in the value
         input_field.clear()
         input_field.send_keys(value_to_fill)
-        print(f"Filled '{label_text}' with '{value_to_fill}' successfully.")
+        print('-'*10 +f"Filled '{label_text}' with '{value_to_fill}' successfully." + '-'*10)
         
     except Exception as e:
-        print(f"An error occurred: {e}")
+        print('-'*10 + "🥲"*4 + f"An error occurred: {e}" + "🥲"*4 + '-'*10)
 
 
 def checkConfirmationPage(driver, promo_code, testcase):
@@ -497,12 +500,11 @@ def checkConfirmationPage(driver, promo_code, testcase):
         )
         paragraph = action_section.find_element(By.TAG_NAME, "p")
         action_section_text = paragraph.text.strip().replace("\n", " ")
-        print(action_section_text)
 
         required_text = "By confirming the appointment you consent to abide by Ayoo’s Terms & Conditions"
 
         if required_text == action_section_text:
-            print("---------- Confirmation Page is displayed. Proceeding to apply promo code. ----------")
+            print('-'*10 + "Confirmation Page is displayed. Proceeding to apply promo code." + '-'*10)
 
             promo_input = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.ID, "applyPromoCode"))
@@ -517,10 +519,10 @@ def checkConfirmationPage(driver, promo_code, testcase):
                 invalid_promo = WebDriverWait(driver, 10).until(
                     EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Invalid')]")
                 ))
-                print(f"---------- Invalid Promo Code in {testcase}. Test failed. ----------")
+                print('-'*10 + "🥲"*4 + f"Invalid Promo Code in {testcase}. Test failed." + "🥲"*4 + '-'*10)
                 return False
             except TimeoutException:
-                print("---------- Valid Promo Code applied. Proceeding. ----------")
+                print('-'*10 + "Valid Promo Code applied. Proceeding."  + '-'*10)
 
             confirm_button = driver.find_element(By.ID, "confirmAppointment")
             confirm_button.click()
@@ -532,72 +534,113 @@ def checkConfirmationPage(driver, promo_code, testcase):
                 print("-" * 10 + f" Appointment Booked Successfully for {testcase} " + "-" * 10)
                 return True
             else:
-                print(f"---------- Confirmation page not displayed in {testcase}. Test failed. ----------")
+                print('-'*10 + "🥲"*4 + f"Confirmation page not displayed in {testcase}. Test failed." + "🥲"*4 + '-'*10)
                 return False
         else:
-            print(f"---------- Confirmation page not displayed in {testcase}. Test failed. ----------")
+            print('-'*10 + "🥲"*4 + f" Confirmation page not displayed in {testcase}. Test failed." + "🥲"*4 + '-'*10)
             return False
     except TimeoutException as e:
-        print(f"---------- Timeout occurred in {testcase}: {e} ----------")
+        print('-'*10 + "🥲"*4 + f"Timeout occurred in {testcase}: {e}" + "🥲"*4 + '-'*10)
         return False
     except NoSuchElementException as e:
-        print(f"---------- Element not found in {testcase}: {e} ----------")
+        print('-'*10 + "🥲"*4 + f"Element not found in {testcase}: {e}"+ "🥲"*4 + '-'*10)
         return False
     except Exception as e:
-        print(f"---------- An unexpected error occurred in {testcase}: {e} ----------")
+        print('-'*10 + "🥲"*4 + f"An unexpected error occurred in {testcase}: {e}"+ "🥲"*4 + '-'*10)
         return False
 
 def login_patient(driver, userdetails, testcase):
     try:
-        print(userdetails)
-        # driver.find_element(By.XPATH, "//input[@placeholder='Email/Phone number']").send_keys(user_details['email'])
-        # driver.find_element(By.XPATH, "//input[@placeholder='Password']").send_keys(user_details['password'])
+       
         driver.find_element(By.XPATH, "//input[@placeholder='Email/Phone number']").send_keys(userdetails["email"])
         time.sleep(2)
         driver.find_element(By.XPATH, "//input[@placeholder='Password']").send_keys(userdetails["password"])
         time.sleep(2)
         driver.find_element(By.XPATH, "//button[text()='sign in']").click()
-        print(f"---------- Login successful for {testcase}. ----------")
-        time.sleep(5)
+        print('-'*10 + f"Login successful for {testcase}." + '-'*10)
+        time.sleep(5) 
         return True
     except TimeoutException as e:
-        print(f"---------- Timeout during login in {testcase}: {e} ----------")
+        print('-'*10 + "🥲"*4 + f" Timeout during login in {testcase}: {e}" + "🥲"*4 + '-'*10)
         return False
     except NoSuchElementException as e:
-        print(f"---------- Element not found during login in {testcase}: {e} ----------")
+        print('-'*10 + "🥲"*4 + f" Element not found during login in {testcase}: {e} " + "🥲"*4 + '-'*10)
         return False
     except Exception as e:
-        print(f"---------- An unexpected error occurred during login in {testcase}: {e} ----------")
+        print('-'*10 + "🥲"*4 + f" An unexpected error occurred during login in {testcase}: {e} " + "🥲"*4 + '-'*10)
         return False
 
+def setup_appointment_signedIn(driver, testcase, appointment_for, consultation_type):
+    print('='*10 + f" Starting test for {testcase} "  + '='*10)
 
-def setup_appointment(driver, appt_For ,testcase):
-    driver.get("https://uat.ayoo.care")
+    # Login
+    login.test_login(driver)
+    time.sleep(1)
+
+    # Select care type
+    driver.find_element(By.CLASS_NAME, "care-type-banner").click()
+
+    # Select appointment type
+    if not selectTypeSignedUser(driver, testcase):
+        print('-'*10 + "🥲"*4 + f"Failed to select type for {testcase}. Stopping test." + "🥲"*4 + '-'*10)
+        return False
+    time.sleep(1)
+
+    # Select appointment for
+    if not selectAppointmentFor(driver, appointment_for, testcase):
+        print('-'*10 + "🥲"*4 + f"Failed to select appointment for {testcase}. Stopping test." + "🥲"*4 + '-'*10)
+        return False
+    time.sleep(2)
+
+    # Select consultation type
+    if not selectConsultationType(driver, consultation_type, testcase):
+        print('-'*10 + "🥲"*4 + f"Failed to select consultation type for {testcase}. Stopping test." + "🥲"*4 + '-'*10)
+        return False
+    time.sleep(2)
+
+    # Select random symptom
+    if not selectRandomSymptom(driver, testcase):
+        print('-'*10 + "🥲"*4 + f"Failed to select random symptom for {testcase}. Stopping test." + "🥲"*4 + '-'*10)
+        return False
+    time.sleep(2)
+
+    # Select time slot
+    if not select_time_slot(driver, testcase):
+        print('-'*10 + "🥲"*4 + f"Failed to select time slot for {testcase}. Stopping test." + "🥲"*4 + '-'*10)
+        return False
+    time.sleep(2)
+
+    return True
+
+
+
+def setup_appointment_nonsignedIn(driver, appt_For ,testcase):
+    driver.get(f"{URL}")
     driver.maximize_window()
     driver.implicitly_wait(10)
 
     if not selectTypeUnSignedUser(driver, f'{testcase}'):
-        print("-" * 10 + " 🥲🥲 Failed to select type. Stopping test execution. 🥲🥲 " + "-" * 10)
+        print("-" * 10 + "🥲"*4 +  "Failed to select type. Stopping test execution." + "🥲"*4 + "-" * 10)
         return
     time.sleep(2)
 
     if not selectAppointmentFor(driver, appt_For, f'{testcase}'):
-        print("-" * 10 + " 🥲🥲 Failed to select appointment. Stopping test execution. 🥲🥲 " + "-" * 10)
+        print("-" * 10 + "🥲"*4 +  "Failed to select appointment. Stopping test execution." + "🥲"*4 + "-" * 10)
         return
     time.sleep(1)
 
     if not selectConsultationType(driver, 'Virtual', f'{testcase}'):  # InClinic
-        print("-" * 10 + " 🥲🥲 Failed to select consultation type. Stopping test execution. 🥲🥲 " + "-" * 10)
+        print("-" * 10 + "🥲"*4 +  "Failed to select consultation type. Stopping test execution." + "🥲"*4 + "-" * 10)
         return
     time.sleep(2)
 
     if not selectRandomSymptom(driver, f'{testcase}'):
-        print("-" * 10 + " 🥲🥲 Failed to select random symptom. Stopping test execution. 🥲🥲 " + "-" * 10)
+        print("-" * 10 + "🥲"*4 +  "Failed to select random symptom. Stopping test execution." + "🥲"*4 + "-" * 10)
         return
     time.sleep(1)
 
     if not select_time_slot(driver, f'{testcase}'):
-        print("-" * 10 + " 🥲🥲 Failed to select time slot. Stopping test execution. 🥲🥲 " + "-" * 10)
+        print("-" * 10 + "🥲"*4 +  "Failed to select time slot. Stopping test execution." + "🥲"*4 + "-" * 10)
         return
     time.sleep(2)
     return True
@@ -626,7 +669,7 @@ def fillNUmandemail_unreg(driver, header, testcase):
         fill_field_by_label(form_container, 'Phone Number', unique_mob)
         fill_field_by_label(form_container, 'Email Id', unique_email)
     except:
-        print(f'-----error while printing emaila nd mobile for new user in: {testcase}')
+        print('-'*10 + "🥲"*4 + f'error while printing emaila nd mobile for new user in: {testcase}' + "🥲"*4 + '-'*10)
 
 
 
@@ -677,15 +720,14 @@ def fillFormBasedOnHeader(driver, header, testcase, userDetails=None):
         # Locate and click the desired option
                 options = options_list.find_elements(By.XPATH, ".//li[@data-value]")
                 for option in options:
-                    print(option)
                     if option.text.strip().lower() == value.lower():
                         option.click()
                         return True  # Exit once the correct option is clicked
-
-                print(f"Gender option '{value}' not found in dropdown.")
+       
+                print('-'*10 + "🥲"*4 + f"Gender option '{value}' not found in dropdown." + "🥲"*4 + '-'*10)
                 return False
             except Exception as e:
-                print(f"Failed to select gender: {e}")
+                print('-'*10 + "🥲"*4 + f"Failed to select gender: {e}" + "🥲"*4 + '-'*10)
                 return False
 
         # Helper function to fill Date of Birth
@@ -705,20 +747,19 @@ def fillFormBasedOnHeader(driver, header, testcase, userDetails=None):
 
                  # Clear and fill the input field
                 input_field.click()
-                input_field.send_keys(Keys.CONTROL + "a")  # Select all text
-                input_field.send_keys(Keys.DELETE)  # Clear the field
-                input_field.send_keys(dob)  # Enter the new value
-                input_field.send_keys(Keys.ENTER)  # Confirm (if needed)
-                time.sleep(1)  # Allow UI to update
-                print(f"Successfully filled Date of Birth: {dob}")
+                input_field.send_keys(Keys.CONTROL + "a") 
+                input_field.send_keys(Keys.DELETE) 
+                input_field.send_keys(dob)  
+                input_field.send_keys(Keys.ENTER)  
+                time.sleep(1)
+                
             except Exception as e:
-                print(f"Failed to fill Date of Birth: {e}")
+                print('-'*10 + "🥲"*4 + f"Failed to fill Date of Birth: {e}" + "🥲"*4 + '-'*10)
 
-        
-
+  
         # Filling form fields based on the header
         if header.lower() == "patient's information":
-            print(f"---------- Filling Patient's Information for {testcase} ----------")
+            print('-'*10 + f" Filling Patient's Information for {testcase} " + '-'*10)
             fill_field_by_label(form_container, 'First Name', fake.first_name())
             fill_field_by_label(form_container, 'Last Name', fake.last_name())
             time.sleep(1)
@@ -727,8 +768,8 @@ def fillFormBasedOnHeader(driver, header, testcase, userDetails=None):
             fill_dob(form_container, '2000-01-01')
             fill_field_by_label(form_container, 'Phone Number', generate_unique_mobile_number())
             fill_field_by_label(form_container, 'Email Id', fake.email())
-        elif header.lower() == "caretaker / account manager's information":
-            print(f"---------- Filling Caretaker / Account Manager's Information for {testcase} ----------")
+        elif header.lower() == "caretaker / account manager's information": 
+            print('-'*10 + f"Filling Caretaker / Account Manager's Information for {testcase} "+ '-'*10)
             time.sleep(1)
             if userDetails:
                 fill_field_by_label(form_container, 'First Name', userDetails.get('first_name', ''))
@@ -740,23 +781,23 @@ def fillFormBasedOnHeader(driver, header, testcase, userDetails=None):
                 fill_dob(form_container, userDetails.get('dob', ''))
                 # fill_field_by_label(form_container, 'Phone Number', userDetails.get('mobile', ''))
                 # fill_field_by_label(form_container, 'Email Id', userDetails.get('email', ''))
-            else:
-                print("---------- User details are not provided for caretaker. ----------")
+            else: 
+                print('-'*10 + "🥲"*4 + "User details are not provided for caretaker. " + "🥲"*4 + '-'*10)
         else:
-            print(f"🥲🥲🥲🥲 Unknown header: {header} 🥲🥲🥲🥲")
+            print('-'*10 + "🥲"*4 + f"Unknown header: {header} " + "🥲"*4 + '-'*10)
 
-        print(f"---------- Form filling completed for header: {header}, testcase: {testcase} ----------")
+        print('-'*10 + f"Form filling completed for header: {header}, testcase: {testcase}" + '-'*10)
         return True
 
     except TimeoutException as e:
-        print(f"🥲🥲🥲🥲 Timeout occurred while locating header: {header} 🥲🥲🥲🥲")
-        print(f"🥲🥲🥲🥲 Error Details : {e} 🥲🥲🥲🥲")
+        print('-'*10 + "🥲"*4 + f" Timeout occurred while locating header: {header} " + "🥲"*4 + '-'*10)
+        print('-'*10 + "🥲"*4 + f" Error Details : {e} " + "🥲"*4 + '-'*10)
         return False
     except NoSuchElementException as e:
-        print(f"🥲🥲🥲🥲 Form fields not found for header: {header} 🥲🥲🥲🥲")
-        print(f"🥲🥲🥲🥲 Error Details : {e} 🥲🥲🥲🥲")
+        print('-'*10 + "🥲"*4 + f"Form fields not found for header: {header} " + "🥲"*4 + '-'*10)
+        print('-'*10 + "🥲"*4 + f"Error Details : {e} " + "🥲"*4 + '-'*10)
         return False
     except Exception as e:
-        print(f"🥲🥲🥲🥲 An unexpected error occurred while handling header: {header} 🥲🥲🥲🥲")
-        print(f"🥲🥲🥲🥲 Error Details : {e} 🥲🥲🥲🥲")
+        print('-'*10 + "🥲"*4 + f"An unexpected error occurred while handling header: {header} " + "🥲"*4 + '-'*10)
+        print('-'*10 + "🥲"*4 + f"Error Details : {e} " + "🥲"*4 + '-'*10)
         return False

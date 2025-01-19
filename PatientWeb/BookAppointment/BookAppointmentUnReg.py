@@ -12,39 +12,42 @@ from selenium.webdriver.support import expected_conditions as EC
 import time
 import random
 from faker import Faker
+from variable import user_details_multiple_login
+from variable import user_details_single_PII
+from variable import PROMO_CODE
 
 fake = Faker()
 
-userDetails = {
-    "first_name": "Aaru",
-    "last_name": "S",
-    "gender": "Male",
-    "dob": "1987-01-01",
-    "mobile": "9434549466",
-    "email": "xoloyi4956@giratex.com",
-    "password": "Ayoo@123"
-}
+# userDetails = {
+#     "first_name": "Aaru",
+#     "last_name": "S",
+#     "gender": "Male",
+#     "dob": "1987-01-01",
+#     "mobile": "9434549466",
+#     "email": "xoloyi4956@giratex.com",
+#     "password": "Ayoo@123"
+# }
 
 def unreg_user_myself_singleAccount_Claim(driver):
-    print("-" * 10 + " Executing Test: Non-Registered: Myself PII Single Account Claim " + "-" * 10)
+    print("=" * 10 + " Executing Test: Non-Registered: Myself PII Single Account Claim " + "=" * 10)
 
     try:
-        if not AppointmentFunctions.setup_appointment(driver, 'Myself', 'Non-Registered: Myself PII Single Account Claim'):
+        if not AppointmentFunctions.setup_appointment_nonsignedIn(driver, 'Myself', 'Non-Registered: Myself PII Single Account Claim'):
             return
 
-        if not AppointmentFunctions.fillUserDetails(driver, userDetails, 'Non-Registered: Myself PII Single Account Claim'):
+        if not AppointmentFunctions.fillUserDetails(driver, user_details_single_PII, 'Non-Registered: Myself PII Single Account Claim'):
             return
 
-        print("\n" + "=" * 10 + " Test Case 1: Claim Account " + "=" * 10)
-        SignUpPII.handlePopupAndActionSingleAcnt(driver, action="claim", user_details=userDetails)
+        print( "=" * 10 + " Test Case 1: Claim Account " + "=" * 10)
+        SignUpPII.handlePopupAndActionSingleAcnt(driver, action="claim", user_details=user_details_single_PII)
     except Exception as e:
-        print("-" * 10 + f" 🥲🥲 Error: {e} 🥲🥲 " + "-" * 10)
+        print("-" * 10 +  "🥲"*4 +  f"Error: {e}"  + "🥲"*4 + "-" * 10)
 
 def unreg_user_myself_singleAccount_new_user(driver):
-    print("-" * 10 + " Executing Test: Non-Registered: Myself PII Single Account - New User " + "-" * 10)
+    print("=" * 10 + " Executing Test: Non-Registered: Myself PII Single Account - New User " + "=" * 10)
 
     try:
-        if not AppointmentFunctions.setup_appointment(driver, 'My Child', 'Non-Registered: Myself PII Single Account - New User'):
+        if not AppointmentFunctions.setup_appointment_nonsignedIn(driver, 'My Child', 'Non-Registered: Myself PII Single Account - New User'):
             return
 
         if not AppointmentFunctions.fillFormBasedOnHeader(driver, "Patient's Information", 'Non-Registered: Myself PII Single Account - New User'):
@@ -53,7 +56,7 @@ def unreg_user_myself_singleAccount_new_user(driver):
         if not AppointmentFunctions.fillFormBasedOnHeader(driver, "Caretaker / Account Manager's Information", 'Non-Registered: Myself PII Single Account - New User', userDetails):
             return
 
-        SignUpPII.handlePopupAndActionSingleAcnt(driver, action="new_user", user_details=userDetails)
+        SignUpPII.handlePopupAndActionSingleAcnt(driver, action="new_user", user_details=user_details_single_PII)
         time.sleep(2)
 
         AppointmentFunctions.fillNUmandemail_unreg(driver, "Caretaker / Account Manager's Information", 'Non-Registered: Myself PII Single Account - New User')
@@ -71,65 +74,53 @@ def unreg_user_myself_singleAccount_new_user(driver):
             print("-" * 10 + " Account Setup Page is visible. " + "-" * 10)
 
     except Exception as e:
-        print("-" * 10 + f" 🥲🥲 Error: {e} 🥲🥲 " + "-" * 10)
+        print("-" * 10 + "🥲"*4 + f"Error: {e}"  + "🥲"*4 + "-" * 10)
 
 def unreg_user_myself_singleAccount_signin(driver):
-    print("-" * 10 + " Executing Test: Non-Registered: Myself PII Single Account - SignIn " + "-" * 10)
+    print("=" * 10 + " Executing Test: Non-Registered: Myself PII Single Account - SignIn " + "=" * 10)
 
     try:
-        if not AppointmentFunctions.setup_appointment(driver, 'Myself', 'Non-Registered: Myself PII Single Account - SignIn'):
+        if not AppointmentFunctions.setup_appointment_nonsignedIn(driver, 'Myself', 'Non-Registered: Myself PII Single Account - SignIn'):
             return
 
-        if not AppointmentFunctions.fillUserDetails(driver, userDetails, 'Non-Registered: Myself PII Single Account - SignIn'):
+        if not AppointmentFunctions.fillUserDetails(driver, user_details_single_PII, 'Non-Registered: Myself PII Single Account - SignIn'):
             return
 
-        print("\n" + "=" * 10 + " Test Case 3: Sign In " + "=" * 10)
-        SignUpPII.handlePopupAndActionSingleAcnt(driver, action="sign_in", user_details=userDetails)
+        print( "=" * 10 + " Test Case 3: Sign In " + "=" * 10)
+        SignUpPII.handlePopupAndActionSingleAcnt(driver, action="sign_in", user_details=user_details_single_PII)
         time.sleep(1)
 
-        logindetails = {
-            "email": "s.kishore123.64@gmail.com",
-            "password": "Ayoo@123"
-        }
 
-        if not AppointmentFunctions.login_patient(driver, logindetails, 'Non-Registered: Myself PII Single Account - SignIn'):
-            print("-" * 10 + " 🥲🥲 Failed to log in patient. Stopping test execution. 🥲🥲 " + "-" * 10)
+        if not AppointmentFunctions.login_patient(driver, user_details_multiple_login, 'Non-Registered: Myself PII Single Account - SignIn'):
+            print("-" * 10 + "🥲"*4 + "Failed to log in patient. Stopping test execution. "  + "🥲"*4  + "-" * 10)
             return
 
-        if not AppointmentFunctions.checkConfirmationPage(driver, 'AUTOTESTT', 'Non-Registered: Myself PII Single Account - SignIn'):
-            print("-" * 10 + " 🥲🥲 Failed to confirm page. Stopping test execution. 🥲🥲 " + "-" * 10)
+        if not AppointmentFunctions.checkConfirmationPage(driver, PROMO_CODE, 'Non-Registered: Myself PII Single Account - SignIn'):
+            print("-" * 10 + "🥲"*4 + "Failed to confirm page. Stopping test execution."  + "🥲"*4  + "-" * 10)
             return
 
         time.sleep(1)
     except Exception as e:
-        print("-" * 10 + f" 🥲🥲 Error: {e} 🥲🥲 " + "-" * 10)
+        print("-" * 10 + "🥲"*4 +  f"Error: {e} "  + "🥲"*4  + "-" * 10)
 
 def unreg_user_myself_MultipleAccountPII(driver):
-    user_details = {
-        "first_name": "Manivasagam",
-        "last_name": "S",
-        "gender": "Male",
-        "dob": "1998-10-12",
-        "mobile": "9566991210",
-        "email": "s.kishore123.64@gmail.com",
-    }
-
-    print("-" * 10 + " Executing Test: Non-Registered: Myself PII Multiple Account " + "-" * 10)
+    
+    print("=" * 10 + " Executing Test: Non-Registered: Myself PII Multiple Account " + "=" * 10)
 
     try:
-        if not AppointmentFunctions.setup_appointment(driver, 'Myself', 'Non-Registered: Myself PII Multiple Account'):
+        if not AppointmentFunctions.setup_appointment_nonsignedIn(driver, 'Myself', 'Non-Registered: Myself PII Multiple Account'):
             return
 
-        if not AppointmentFunctions.fillUserDetails(driver, user_details, 'Non-Registered: Myself PII Multiple Account'):
+        if not AppointmentFunctions.fillUserDetails(driver, user_details_multiple_login, 'Non-Registered: Myself PII Multiple Account'):
             return
 
-        if not SignUpPII.handlePopupAndActionMultipleAcnt(driver, user_details):
-            print("-" * 10 + " 🥲🥲 Failed to display PII Popup. Stopping test execution. 🥲🥲 " + "-" * 10)
+        if not SignUpPII.handlePopupAndActionMultipleAcnt(driver, user_details_multiple_login):
+            print("-" * 10 + "🥲"*4 +  " Failed to display PII Popup. Stopping test execution."  + "🥲"*4  + "-" * 10)
             return
 
         time.sleep(2)
     except Exception as e:
-        print("-" * 10 + f" 🥲🥲 Error: {e} 🥲🥲 " + "-" * 10)
+        print("-" * 10 + "🥲"*4 +  f"Error: {e} 🥲🥲 " + "-" * 10)
 
 def unregUsers():
     # execute_test(unreg_user_myself_singleAccount_Claim)
@@ -142,7 +133,7 @@ def execute_test(test_function):
     try:
         test_function(driver)
     except Exception as e:
-        print("-" * 10 + f" 🥲🥲 Error executing {test_function.__name__}: {e} 🥲🥲 " + "-" * 10)
+        print("-" * 10 + "🥲"*4 +   f"Error executing {test_function.__name__}: {e} 🥲🥲 "  + "🥲"*4  + "-" * 10)
     finally:
         driver.quit()
 

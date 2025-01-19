@@ -10,52 +10,38 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from PatientWeb.BookAppointment import AppointmentFunctions
 import time
+from variable import URL
+from variable import user_details_multiple_login
+from variable import user_details_single_PII
 
 def checkPIISingleAcnt(driver):
     print("-" * 10 + " Executing Test: Sign Up PII Single Account " + "-" * 10)
 
-    # User details to be reused
-    user_details = {
-        "first_name": "Aaru",
-        "last_name": "S",
-        "gender": "Male",
-        "dob": "1987-01-01",
-        "mobile": "9434549466",
-        "email": "xoloyi4956@giratex.com",
-    }
+
 
     # Test Case 1: Claim Account
     print("\n" + "=" * 10 + " Test Case 1: Claim Account " + "=" * 10)
-    provideUserDetails(driver, **user_details)
-    handlePopupAndActionSingleAcnt(driver, action="claim", user_details=user_details)
+    provideUserDetails(driver, **user_details_single_PII)
+    handlePopupAndActionSingleAcnt(driver, action="claim", user_details=user_details_single_PII)
 
     # Test Case 2: I'm New User
     print("\n" + "=" * 10 + " Test Case 2: I'm New User " + "=" * 10)
-    provideUserDetails(driver, **user_details)
-    handlePopupAndActionSingleAcnt(driver, action="new_user", user_details=user_details)
+    provideUserDetails(driver, **user_details_single_PII)
+    handlePopupAndActionSingleAcnt(driver, action="new_user", user_details=user_details_single_PII)
 
     # Test Case 3: Sign In
     print("\n" + "=" * 10 + " Test Case 3: Sign In " + "=" * 10)
-    provideUserDetails(driver, **user_details)
-    handlePopupAndActionSingleAcnt(driver, action="sign_in", user_details=user_details)
+    provideUserDetails(driver, **user_details_single_PII)
+    handlePopupAndActionSingleAcnt(driver, action="sign_in", user_details=user_details_single_PII)
 
 
 def checkPIIMultipleAcnt(driver):
-    print("-" * 10 + " Executing Test: Sign Up PII Multiple Account " + "-" * 10)
+    print("=" * 10 + " Executing Test: Sign Up PII Multiple Account " + "=" * 10)
 
-    # User details to be reused
-    user_details = {
-        "first_name": "Manivasagam",
-        "last_name": "S",
-        "gender": "Male",
-        "dob": "1998-10-12",
-        "mobile": "9566991210",
-        "email": "s.kishore123.64@gmail.com",
-    }
 
     print("\n" + "=" * 10 + " Test Case 1: Claim Account " + "=" * 10)
-    provideUserDetails(driver, **user_details)
-    handlePopupAndActionMultipleAcnt(driver, user_details=user_details)
+    provideUserDetails(driver, **user_details_multiple_login)
+    handlePopupAndActionMultipleAcnt(driver, user_details=user_details_multiple_login)
 
 
 def handlePopupAndActionSingleAcnt(driver, action, user_details):
@@ -84,10 +70,10 @@ def handlePopupAndActionSingleAcnt(driver, action, user_details):
                 handleSignInCase(driver, user_details)
 
         else:
-            print("-" * 10 + " Pop-up not displayed, Test Failed " + "-" * 10)
+            print("-" * 10 + "🥲"*4 + " Pop-up not displayed, Test Failed "  + "🥲"*4  + "-" * 10)
 
     except Exception as e:
-        print("-" * 10 + f" Error during claim action: {e} " + "-" * 10)
+        print("-" * 10 + "🥲"*4 +  f" Error during claim action: {e} " +   "🥲"*4 + "-" * 10)
 
 
 def handlePopupAndActionMultipleAcnt(driver, user_details):
@@ -110,12 +96,13 @@ def handlePopupAndActionMultipleAcnt(driver, user_details):
                 return False
             return True
     except Exception as e:
-       print("-" * 10 + f" Error during Claim for Multiple Account action: {e} " + "-" * 10)
+       print("-" * 10 + "🥲"*4 +  f" Error during Claim for Multiple Account action: {e} "  + "🥲"*4 + "-" * 10)
        return False 
+  
 
 
 def claimAccountDef(driver, user_details):
-    print("-" * 10 + " Starting Claim Account Process " + "-" * 10)
+    print("=" * 10 + " Starting Claim Account Process " + "=" * 10)
     try:
         # Wait for the 'Confirm Details' page to appear
         confirm_details_page = WebDriverWait(driver, 10).until(
@@ -146,29 +133,29 @@ def claimAccountDef(driver, user_details):
                 EC.presence_of_element_located((By.CLASS_NAME, "otp-verification-modal"))
                 )
                 if otp_modal.is_displayed():
-                    print("-" * 10 + "SignUp PII, Claim Account Test Passed " + "-" * 10)
+                    print("-" * 10  +  "SignUp PII, Claim Account Test Passed " + "-" * 10)
                     return True
                 else:
-                    print("-" * 10 + " 🥲 OTP verification modal not displayed, Test Failed 🥲 " + "-" * 10)
-                    return False        
+                    print("-" * 10 + "🥲"*4 +  " OTP verification modal not displayed, Test Failed "  + "🥲"*4 + "-" * 10)
+                      
             else:
-                print("-" * 10 + " 🥲 Reset Password modal not displayed, Test Failed 🥲 " + "-" * 10)
+                print("-" * 10 + "🥲"*4 + " 🥲 Reset Password modal not displayed, Test Failed 🥲 "   + "🥲"*4 + "-" * 10)
                 return False
 
     except Exception as e:
         # Handle any errors during the Claim Account process
-        print("-" * 10 + " 🥲🥲🥲 Claim Account Test Failed 🥲🥲🥲 " + "-" * 10)
-        print("-" * 10 + f" Error: {e} " + "-" * 10)
-
+        print("-" * 10 + "🥲"*4 + " Claim Account Test Failed "  + "🥲"*4 + "-" * 10)
+        print("-" * 10 + "🥲"*4 + f" Error: {e} "  + "🥲"*4 + "-" * 10)
+    return False        
 
 def handleNewUserCase(driver, user_details):
-    print("-" * 10 + " Handling New User Case " + "-" * 10)
+    print("=" * 10 + " Handling New User Case " + "=" * 10)
     try:
         print("-" * 10 + " New User case handled successfully " + "-" * 10)
         return True
     except Exception as e:
-        print("-" * 10 + f" Error in New User Case: {e} " + "-" * 10)
-        return False
+        print("-" * 10 + "🥲"*4 +  f" Error in New User Case: {e} "  + "🥲"*4 + "-" * 10)
+        return False 
 
 
 def handleSignInCase(driver, user_details):
@@ -181,13 +168,13 @@ def handleSignInCase(driver, user_details):
             print("-" * 10 + " Sign In case handled successfully " + "-" * 10)
             return True
     except Exception as e:
-        print("-" * 10 + f" Error in Sign In Case: {e} " + "-" * 10)
+        print("-" * 10 + "🥲"*4 +  f" Error in Sign In Case: {e} "  + "🥲"*4 + "-" * 10)
         return False
 
-
+ 
 
 def provideUserDetails(driver, first_name, last_name, gender, dob, **kwargs):
-    driver.get("https://uat.ayoo.care/SignUp")
+    driver.get(f"{URL}/SignUp")
     driver.maximize_window()
     driver.implicitly_wait(10)
     print("-" * 10 + f" Providing details: {first_name} {last_name}, Gender: {gender}, DOB: {dob} " + "-" * 10)
@@ -205,7 +192,6 @@ def provideUserDetails(driver, first_name, last_name, gender, dob, **kwargs):
     EC.element_to_be_clickable((By.XPATH, "//label[contains(text(), 'Gender')]/following-sibling::div//div[@role='combobox']"))
     )
     input_field.click()
-    print('Gender clicked')
     driver.find_element(By.XPATH, f"//li[@data-value='{gender}']").click()
 
     # Enter DOB
@@ -234,7 +220,7 @@ def fillDetails(driver, user_details):
         email_input.send_keys(user_details["email"])
         time.sleep(2)
     except Exception as e:
-        print("-" * 10 + f" Error filling details: {e} " + "-" * 10)
+        print("-" * 10 + "🥲"*4 +  f" Error filling details: {e} "  + "🥲"*4 + "-" * 10)
 
 
 def fill_passwords(driver):

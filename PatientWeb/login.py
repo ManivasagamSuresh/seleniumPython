@@ -1,22 +1,26 @@
+import sys
+sys.path.append("E:/front-end/automation_selenium/")
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import time
+from variable import URL
+from variable import user_details_multiple_login as user_details
 
-user_details = {
-        "first_name": "Manivasagam",
-        "last_name": "S",
-        "gender": "Male",
-        "dob": "1998-10-12",
-        "mobile": "9566991210",
-        "email": "s.kishore123.64@gmail.com",
-        "password": "Ayoo@123"
-    }
+# user_details = {
+#         "first_name": "Manivasagam",
+#         "last_name": "S",
+#         "gender": "Male",
+#         "dob": "1998-10-12",
+#         "mobile": "9566991210",
+#         "email": "s.kishore123.64@gmail.com",
+#         "password": "Ayoo@123"
+#     }
 
 def test_login(driver):
     print("-" * 10 + "Executing Test: Login"+ "-" * 10)
-    driver.get("https://uat.ayoo.care/Login")
+    driver.get(f"{URL}/Login")
     driver.maximize_window()
     driver.implicitly_wait(20)
     

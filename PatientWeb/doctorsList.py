@@ -1,12 +1,14 @@
-from selenium import webdriver
+import sys
+sys.path.append("E:/front-end/automation_selenium/")
+
 from selenium.webdriver.common.by import By
-import time
+from variable import URL
 
 def test_dasboardDoctorsList(driver):
-    print("Executing Test: Dashboard Doctors List")
-    driver.get("https://uat.ayoo.care/")
+    print('='*10 + "Executing Test: Dashboard Doctors List" + '='*10)
+    driver.get(f"{URL}")
 
-    driver.implicitly_wait(10)
+    driver.implicitly_wait(20)
 
     slick_list = driver.find_element(By.CLASS_NAME, "slick-track")
 
@@ -15,10 +17,11 @@ def test_dasboardDoctorsList(driver):
     number_of_doctors = len(doctor_elements)
 
     if number_of_doctors == 5:
-        print("Dashboard Doctors List Test Passed")
+        print( '-'*10 + "Dashboard Doctors List Test Passed"+ '-'*10)
         
     else:
-        print("-----🥲🥲🥲----------------Dashboard Doctors List Test Failed---------------🥲🥲🥲-----------")
-        print(f"There are {number_of_doctors} doctors in the list.")
+        print( '-'*10 + "🥲"*4 + "Dashboard Doctors List Test Failed" + "🥲"*4 + '-'*10)
+        print('-'*10 + "🥲"*4 + f"There are {number_of_doctors} doctors in the list."+ "🥲"*4 + '-'*10)
         return
+    
    
